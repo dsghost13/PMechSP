@@ -1,1 +1,1 @@
-# PolarSitePredictor
+# Polar Mechanistic Site Predictor
