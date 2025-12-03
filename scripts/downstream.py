@@ -67,12 +67,20 @@ def decode(logits, x, edge_index):
             second_idx = idx
             break
 
-    # find index of 20
+    # find index of 10 and 20
     idx_10, idx_20 = None, None
-    if first_class == 1:
-        idx_10, idx_20 = first_idx, second_idx
-    elif second_class == 1:
-        idx_10, idx_20 = second_idx, first_idx
+    if first_class == 1 and second_class == 3:
+        if first_idx == second_idx:
+            idx_20 = first_idx
+            preds[first_idx] = 3
+        else:
+            idx_10, idx_20 = first_idx, second_idx
+    elif first_class == 3 and second_class == 1:
+        if first_idx == second_idx:
+            idx_20 = first_idx
+            preds[first_idx] = 3
+        else:
+            idx_20, idx_10 = first_idx, second_idx
 
     # label 21 if 20 already has full valence and below group 2
     if (idx_20 is not None) and (x[idx_20, 5] == 1.0):
@@ -95,7 +103,7 @@ def decode(logits, x, edge_index):
             preds[best_idx_21] = 4
 
     # label 11 if 10 has no lone pairs
-    if (idx_10 is not None) and (x[idx_10, 4] == 0.0):
+    if (idx_10 is not None) and (idx_10 != idx_20) and (x[idx_10, 4] == 0.0):
         neighbors = edge_index[1][edge_index[0] == idx_10].tolist()
 
         best_idx_11 = None
