@@ -12,7 +12,7 @@ def get_atom_features(atom):
 
     # electronic properties
     lone_pairs = get_lone_pairs(atom)
-    is_valence_full = int(get_valence_full(atom))
+    # TODO: is_valence_full = int(get_valence_full(atom))
 
     # hybridization
     hybridization = atom.GetHybridization()
@@ -26,7 +26,7 @@ def get_atom_features(atom):
         float(group),
         float(electronegativity),
         float(lone_pairs),
-        float(is_valence_full),
+        # TODO: float(is_valence_full),
         float(is_sp),
         float(is_sp2),
         float(is_sp3)
@@ -41,8 +41,6 @@ def get_bond_features(bond):
         float(bond_type == Chem.rdchem.BondType.AROMATIC),
         float(bond.GetIsConjugated()),
         float(bond.IsInRing()),
-        float(bond.GetStereo() == Chem.rdchem.BondStereo.STEREOZ),
-        float(bond.GetStereo() == Chem.rdchem.BondStereo.STEREOE),
         # TODO: rotatable bonds
     ], dtype=torch.float)
 
@@ -51,28 +49,6 @@ def get_lone_pairs(atom):
     num_bonding = atom.GetFormalCharge() + atom.GetTotalValence()
     num_lone_pairs = (num_valence - num_bonding) // 2
     return max(num_lone_pairs, 0)
-
-
-def get_default_valence(atom):
-    valence_list = list(Chem.GetPeriodicTable().GetValenceList(atom.GetAtomicNum()))
-    num_bonds = atom.GetTotalValence()
-    formal_charge = atom.GetFormalCharge()
-
-    for valence in valence_list:
-        if num_bonds == (valence - formal_charge):
-            print(valence)
-            return valence
-    return Chem.GetPeriodicTable().GetDefaultValence(atom.GetAtomicNum())
-
-# def get_valence_full(atom):
-#     total_valence = atom.GetTotalValence()
-#     default_valence = get_default_valence(atom)
-#     return total_valence >= default_valence
-
-def get_valence_full(atom):
-    explicit_valence = atom.GetValence(Chem.ValenceType.EXPLICIT)
-    normal_valence = Chem.GetPeriodicTable().GetDefaultValence(atom.GetAtomicNum())
-    return explicit_valence >= normal_valence
 
 PERIODIC_TABLE_GROUPS = {
     1: 1,    # H
@@ -157,87 +133,3 @@ PAULING_ELECTRONEGATIVITIES = {
     78: 2.28,  # Pt
     79: 2.54   # Au
 }
-
-EMPTY_VALENCE_NEUTRAL_ATOM = {
-    1: [False, 2],   # H
-    3: [True, 8],    # Li
-    5: [True, 8],    # B
-    6: [False, 8],   # C tetravalent, not carbene
-    7: [False, 8],   # N
-    8: [False, 8],   # O
-    9: [False, 8],   # F
-    11: [True, 12],  # Na
-    12: [True, 12],  # Mg
-    13: [True, 12],  # Al
-    14: [True, 12],  # Si
-    15: [False, 10], # P
-    16: [False, 10], # S
-    17: [True, 14],  # Cl
-    19: [True, 18],  # K
-    20: [True, 18],  # Ca
-    21: [True, 18],  # Sc
-    22: [True, 18],  # Ti
-    24: [True, 18],  # Cr
-    25: [True, 18],  # Mn
-    26: [True, 18],  # Fe
-    27: [True, 18],  # Co
-    28: [True, 18],  # Ni
-    29: [True, 18],  # Cu
-    30: [True, 18],  # Zn
-    33: [True, 10],  # As
-    34: [True, 10],  # Se
-    35: [True, 14],  # Br
-    40: [True, 18],  # Zr
-    44: [True, 18],  # Ru
-    45: [True, 18],  # Rh
-    46: [True, 18],  # Pd
-    47: [True, 18],  # Ag
-    49: [True, 18],  # In
-    50: [True, 18],  # Os
-    53: [True, 14],  # I
-    77: [True, 18],  # Ir
-    78: [True, 18],  # Pt
-    79: [True, 18],  # Au
-}
-
-# EMPTY_VALENCE_NEGATIVE_ATOM = {
-#     1: [False, 2],   # H
-#     3: [True, 8],    # Li
-#     5: [True, 8],    # B
-#     6: [False, 8],   # C
-#     7: [False, 8],   # N
-#     8: [False, 8],   # O
-#     9: [False, 8],   # F
-#     11: [True, 12],  # Na
-#     12: [True, 12],  # Mg
-#     13: [False, 12], # Al
-#     14: [True, 12],  # Si
-#     15: [False, 10], # P
-#     16: [False, 10], # S
-#     17: [True, 14],  # Cl
-#     19: [True, 18],  # K
-#     20: [True, 18],  # Ca
-#     21: [True, 18],  # Sc
-#     22: [True, 18],  # Ti
-#     24: [True, 18],  # Cr
-#     25: [True, 18],  # Mn
-#     26: [True, 18],  # Fe
-#     27: [True, 18],  # Co
-#     28: [True, 18],  # Ni
-#     29: [True, 18],  # Cu
-#     30: [True, 18],  # Zn
-#     33: [True, 10],  # As
-#     34: [True, 10],  # Se
-#     35: [True, 14],  # Br
-#     40: [True, 18],  # Zr
-#     44: [True, 18],  # Ru
-#     45: [True, 18],  # Rh
-#     46: [True, 18],  # Pd
-#     47: [True, 18],  # Ag
-#     49: [True, 18],  # In
-#     50: [True, 18],  # Os
-#     53: [True, 14],  # I
-#     77: [True, 18],  # Ir
-#     78: [True, 18],  # Pt
-#     79: [True, 18],  # Au
-# }

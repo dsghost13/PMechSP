@@ -4,7 +4,7 @@ from torch_geometric.data import Data, Dataset
 
 from scripts.feature_extraction import get_atom_features, get_bond_features
 
-LABEL_MAP = {10: 1, 11: 2, 20: 3, 21: 4}
+LABEL_MAP = {10: 1, 20: 2}
 
 class SmilesDataset(Dataset):
     def __init__(self, smiles_list):
@@ -25,7 +25,8 @@ class SmilesDataset(Dataset):
 def smiles_to_graph(smiles):
     try:
         mol = Chem.MolFromSmiles(smiles, sanitize=False)
-    except:
+    except Exception as e:
+        print(e)
         return None
 
     # node features
@@ -35,7 +36,7 @@ def smiles_to_graph(smiles):
     labels = [LABEL_MAP.get(atom.GetAtomMapNum(), 0) for atom in mol.GetAtoms()]
     num_nodes = len(labels)
 
-    y = torch.zeros((num_nodes, 5), dtype=torch.float)
+    y = torch.zeros((num_nodes, 3), dtype=torch.float) # y = {0, 1, 2}
     for i, label in enumerate(labels):
         y[i, label] = 1.0
 
@@ -54,10 +55,9 @@ def smiles_to_graph(smiles):
 
     if len(edge_index) == 0:
         edge_index = torch.empty((2, 0), dtype=torch.long)
-        edge_attr = torch.empty((0, 8), dtype=torch.float)  # 6 = bond feature dim
+        edge_attr = torch.empty((0, 6), dtype=torch.float)  # 6 bond features
     else:
         edge_index = torch.tensor(edge_index, dtype=torch.long).t().contiguous()
         edge_attr = torch.stack(edge_attr)
 
-    # graph object
     return Data(x=x, y=y, edge_index=edge_index, edge_attr=edge_attr, smiles=smiles)
