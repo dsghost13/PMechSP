@@ -9,7 +9,7 @@ ATOM_MAP = {value: key for key, value in LABEL_MAP.items()}
 def split_batch_by_molecule(logits, batch):
     mol_preds = []
     mol_true = []
-
+    mol_tuples = []
     # atom-level truth labels
     true = batch.y.argmax(dim=1)
 
@@ -26,10 +26,12 @@ def split_batch_by_molecule(logits, batch):
         )
 
         # molecule-level predictions and truth labels
-        mol_preds.append(decode(mol_logits, mol_x, mol_edge_index))
+        preds, dumb_tuple = decode(mol_logits, mol_x, mol_edge_index)
+        mol_preds.append(preds)
+        mol_tuples.append(dumb_tuple)
         mol_true.append(true[node_idx])
 
-    return mol_preds, mol_true
+    return mol_preds, mol_true, mol_tuples
 
 def decode(logits, x, edge_index):
     num_nodes = logits.size(0)
@@ -67,18 +69,22 @@ def decode(logits, x, edge_index):
             second_idx = idx
             break
 
+    dumb_tuple = [prob[best_idx_10, 0] >= prob[best_idx_10, 1], prob[best_idx_10, 0], prob[best_idx_10, 1]]
+
     # find index of 10 and 20
     idx_10, idx_20 = None, None
     if first_class == 1 and second_class == 3:
-        if first_idx == second_idx:
-            idx_20 = first_idx
-            preds[first_idx] = 3
+        if prob[best_idx_10, 0] >= prob[best_idx_10, 1]:
+            idx_20 = second_idx
+            preds[second_idx] = 3
+            preds[first_idx] = 0
         else:
             idx_10, idx_20 = first_idx, second_idx
     elif first_class == 3 and second_class == 1:
-        if first_idx == second_idx:
+        if prob[best_idx_10, 0] >= prob[best_idx_10, 1]:
             idx_20 = first_idx
             preds[first_idx] = 3
+            preds[second_idx] = 0
         else:
             idx_20, idx_10 = first_idx, second_idx
 
@@ -116,7 +122,7 @@ def decode(logits, x, edge_index):
         if best_idx_11 is not None:
             preds[best_idx_11] = 2
 
-    return preds
+    return preds, dumb_tuple
 
 def get_prediction_smiles(labels, smiles):
     predicted_smiles = []
