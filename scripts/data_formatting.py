@@ -2,7 +2,7 @@ import torch
 from rdkit import Chem
 from torch_geometric.data import Data, Dataset
 
-from scripts.feature_extraction import get_atom_features, get_bond_features
+from feature_extraction import get_atom_features, get_bond_features
 
 LABEL_MAP = {10: 1, 20: 2}
 

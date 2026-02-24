@@ -2,7 +2,7 @@ import torch
 from rdkit import Chem
 from torch_geometric.utils import subgraph
 
-from scripts.data_formatting import LABEL_MAP
+from data_formatting import LABEL_MAP
 
 ATOM_MAP = {value: key for key, value in LABEL_MAP.items()}
 
@@ -25,7 +25,7 @@ def split_batch_by_molecule(logits, batch):
         )
 
         # molecule-level predictions and truth labels
-        preds = decode(mol_logits, mol_x, mol_edge_index)
+        preds = decode(mol_logits)
         mol_preds.append(preds)
         mol_true.append(true[node_idx])
 
