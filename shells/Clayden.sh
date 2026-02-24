@@ -8,6 +8,6 @@
 #SBATCH --time=7-24:00:00
 #SBATCH --account=dlvanvra_lab
 
-cd /data/homezvol0/petertl2/PMechSP
+cd /data/homezvol0/petertl2/PMechSP/shells
 
-/data/homezvol0/petertl2/miniconda3/envs/PMechSP/bin/python /data/homezvol0/petertl2/PMechSP/scripts/train_clayden.py
+/data/homezvol0/petertl2/miniconda3/envs/PMechSP/bin/python /data/homezvol0/petertl2/PMechSP/shells/train_clayden.py

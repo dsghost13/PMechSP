@@ -10,7 +10,7 @@ from scripts.nn_models import GINE
 #---------------------------------------------------------------------------------------------------------------
 
 # raw dataset
-df = pd.read_csv('/data/homezvol0/petertl2/PMechSP/datasets/10k_Mayr.csv')
+df = pd.read_csv('/data/homezvol0/petertl2/PMechSP/datasets/37k_Combined.csv')
 smiles_list = df['SMILES Labelled'].tolist()
 
 #---------------------------------------------------------------------------------------------------------------
@@ -80,7 +80,7 @@ for epoch in range(num_epochs):
     if avg_val_loss < best_val_loss:
         counter = 0
         best_val_loss = avg_val_loss
-        torch.save(model.state_dict(), f"/data/homezvol0/petertl2/PMechSP/models/mayr/mayr_{epoch + 1}.pt")
+        torch.save(model.state_dict(), f"/data/homezvol0/petertl2/PMechSP/models/Combined/Combined_{epoch + 1}.pt")
     else:
         counter += 1
         if counter >= patience:

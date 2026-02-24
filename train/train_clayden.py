@@ -3,9 +3,9 @@ import torch
 from sklearn.model_selection import train_test_split
 from torch_geometric.loader import DataLoader
 
-from data_formatting import SmilesDataset
-from downstream import split_batch_by_molecule
-from nn_models import GINE  
+from scripts.data_formatting import SmilesDataset
+from scripts.downstream import split_batch_by_molecule
+from scripts.nn_models import GINE  
 
 #---------------------------------------------------------------------------------------------------------------
 
