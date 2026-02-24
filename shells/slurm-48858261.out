@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "/data/homezvol0/petertl2/PMechSP/train/train_combined.py", line 6, in <module>
+    from scripts.data_formatting import SmilesDataset
+ModuleNotFoundError: No module named 'scripts'
