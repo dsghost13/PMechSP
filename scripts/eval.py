@@ -11,8 +11,17 @@ from test import mapped_molecules_equivalent
 MODEL_PATH = '/data/homezvol0/petertl2/PMechSP/models/mayr/mayr_159.pt'
 OUTPUT_CSV = '/data/homezvol0/petertl2/PMechSP/results/mayr_test_eval.csv'
 
+# MODEL_PATH = '/data/homezvol0/petertl2/PMechSP/models/clayden/clayden_135.pt'
+# OUTPUT_CSV = '/data/homezvol0/petertl2/PMechSP/results/clayden_test_eval.csv'
+
+# MODEL_PATH = '/data/homezvol0/petertl2/PMechSP/models/PT/PT_287.pt'
+# OUTPUT_CSV = '/data/homezvol0/petertl2/PMechSP/results/PT_test_eval.csv'
+
+# MODEL_PATH = '/data/homezvol0/petertl2/PMechSP/models/AM/AM_183.pt'
+# OUTPUT_CSV = '/data/homezvol0/petertl2/PMechSP/results/mayr_test_eval.csv'
+
 # raw dataset
-df = pd.read_csv('/data/homezvol0/petertl2/PMechSP/datasets/4k_Clayden.csv')
+df = pd.read_csv('/data/homezvol0/petertl2/PMechSP/datasets/10k_Tet_Int.csv')
 smiles_list = df['SMILES Labelled'].tolist()
 
 test_dataset = SmilesDataset(smiles_list)
